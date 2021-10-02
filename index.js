@@ -4,15 +4,17 @@ const { Client, Collection, Intents } = require('discord.js');
 const { token } = require('./config.json');
 
 // Create a new client instance
-const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_MESSAGES] });
 
-// Create Discord-music-player
-const { Player } = require('discord-music-player');
-const player = new Player(client, {
-	leaveOnEmpty: false,
-});
-// You can define the Player as *client.player* to easly access it.
-client.player = player;
+// // Create Discord-music-player
+// const { Player } = require('discord-music-player');
+// const player = new Player(client, {
+// 	leaveOnEmpty: false,
+// });
+// // You can define the Player as *client.player* to easly access it.
+// client.player = player;
+
+client.subscriptions = new Map();
 
 client.commands = new Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
