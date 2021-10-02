@@ -15,13 +15,14 @@ module.exports = {
 		const queue = guildQueue.songs;
 		if (queue) {
 			let response = ' ';
-			for (let i = 0; i < queue.length; i++) {
+			if (queue.length > 10) response = 'Only showing first 10 songs in queue\n';
+			for (let i = 0; i < queue.length && i < 10; i++) {
 				response = response + `${i + 1}. ${hyperlink(queue[i].name, queue[i].url)}\n`;
 			}
 			const embed = new MessageEmbed()
 				.setColor('#34EB46')
 				.setDescription(response);
-			await interaction.channel.send({ embeds: [embed] });
+			await interaction.reply({ embeds: [embed] });
 		}
 		else {
 			await interaction.reply('There is no music queue doofus');

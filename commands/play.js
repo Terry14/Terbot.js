@@ -11,15 +11,21 @@ module.exports = {
 		await interaction.deferReply();
 		const client = interaction.client;
 		const input = interaction.options.getString('song');
-		const queue = client.player.createQueue(interaction.guild.id);
-
-		await queue.join(interaction.member.voice.channel);
+		let queue;
+		if (!client.player.hasQueue(interaction.guild.id)) {
+			queue = client.player.createQueue(interaction.guild.id);
+		}
+		else {
+			queue = client.player.getQueue(interaction.guild.id);
+		}
+		console.log(input);
+		if (!queue.isPlaying) await queue.join(interaction.member.voice.channel);
 		try {
 			const song = await queue.play(input);
 			const embed = new MessageEmbed()
 				.setColor('#34EB46')
 				.setDescription(`Added ${hyperlink(song.name, song.url)} to the queue`);
-			await interaction.Send({ embeds: [embed] });
+			await interaction.editReply({ embeds: [embed] });
 		}
 		catch {
 			await interaction.editReply({ content: 'Failed to play: ' + input + ' :\'(', ephemeral: false });
