@@ -1,31 +1,30 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
+const { hyperlink } = require('@discordjs/builders');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('play')
 		.setDescription('Queues a song to be played')
-		.addStringOption(option => option.setName('url').setDescription('Enter the music url or search terms for youtube')),
+		.addStringOption(option => option.setName('song').setDescription('Enter the music url or search terms for youtube').setRequired(true)),
 	async execute(interaction) {
 		await interaction.deferReply();
-		// Extract the video URL from the command
-		const url = interaction.options.get('song')!.value! as string;
+		const client = interaction.client;
+		const input = interaction.options.getString('song');
+		const queue = client.player.createQueue(interaction.guild.id);
 
-		// If a connection to the guild doesn't already exist and the user is in a voice channel, join that channel
-		// and create a subscription.
-		if (!subscription) {
-			if (interaction.member instanceof GuildMember && interaction.member.voice.channel) {
-				const channel = interaction.member.voice.channel;
-				subscription = new MusicSubscription(
-					joinVoiceChannel({
-						channelId: channel.id,
-						guildId: channel.guild.id,
-						adapterCreator: channel.guild.voiceAdapterCreator,
-					}),
-				);
-				subscription.voiceConnection.on('error', console.warn);
-				subscriptions.set(interaction.guildId, subscription);
-			}
+		await queue.join(interaction.member.voice.channel);
+		try {
+			const song = await queue.play(input);
+			const embed = new MessageEmbed()
+				.setColor('#34EB46')
+				.setDescription(`Added ${hyperlink(song.name, song.url)} to the queue`);
+			await interaction.Send({ embeds: [embed] });
 		}
-		});
+		catch {
+			await interaction.editReply({ content: 'Failed to play: ' + input + ' :\'(', ephemeral: false });
+			return;
+		}
+
 	},
 };

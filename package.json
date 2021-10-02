@@ -22,12 +22,15 @@
   },
   "dependencies": {
     "@discordjs/builders": "^0.6.0",
+    "@discordjs/opus": "^0.6.0",
     "@discordjs/rest": "^0.1.0-canary.0",
     "@discordjs/voice": "^0.6.0",
     "discord-api-types": "^0.23.1",
+    "discord-music-player": "^8.0.2",
     "discord.js": "^13.1.0",
     "sodium": "^3.0.2",
     "youtube-dl-exec": "^1.2.14",
+    "youtubei": "^0.0.1-rc.24",
     "ytdl-core": "^4.9.1"
   }
 }
